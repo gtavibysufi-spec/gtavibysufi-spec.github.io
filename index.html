@@ -1,0 +1,876 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Sufinity Verse</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Hanken+Grotesk:wght@400;500;600&family=Syne:wght@600;700;800&display=swap">
+<style>
+/* Layout concept: dark studio. A video-editor timeline is the hero object; services are dense and scannable,
+   work is a filterable gallery, packages are tabbed by discipline. Blue is the only hue; depth comes from navy layers. */
+:root {
+  --bg: #04060C;
+  --bg2: #070C1A;
+  --surface: #0B1226;
+  --surface2: #101A36;
+  --line: #1B2850;
+  --fg: #E8EEFF;
+  --muted: #8C9BC4;
+  --blue: #2F6BFF;
+  --blue2: #5B8CFF;
+  --ice: #A9C4FF;
+  --glow: rgba(47, 107, 255, .35);
+  --font-display: "Syne", "Trebuchet MS", system-ui, sans-serif;
+  --font-body: "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "DM Mono", ui-monospace, Menlo, monospace;
+  --radius: 14px;
+  --ease: cubic-bezier(.2, .7, .2, 1);
+  color-scheme: dark;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 5.5rem; background: var(--bg); }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font-family: var(--font-body); font-size: 1.0625rem; line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  overflow-x: hidden;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 60; background: var(--bg); }
+h1, h2, h3, h4, p, ul, figure { margin: 0; }
+ul { padding: 0; list-style: none; }
+a { color: inherit; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+svg { max-width: 100%; }
+:focus-visible { outline: 2px solid var(--blue2); outline-offset: 3px; border-radius: 4px; }
+::selection { background: var(--blue); color: #fff; }
+
+.wrap { width: 100%; max-width: 78rem; margin-inline: auto; }
+.bleed { margin-inline: calc(-1 * max(16px, env(safe-area-inset-left, 0px))); padding-inline: max(16px, env(safe-area-inset-left, 0px)); }
+.eyebrow { font-family: var(--font-mono); font-size: .75rem; letter-spacing: .16em; text-transform: uppercase; color: var(--blue2); display: inline-flex; align-items: center; gap: .6rem; }
+.eyebrow::before { content: ""; width: 1.6rem; height: 1px; background: var(--blue2); }
+.h2 { font-family: var(--font-display); font-weight: 700; font-size: clamp(2.2rem, 5.4vw, 4rem); line-height: 1.02; letter-spacing: -.02em; text-wrap: balance; margin-top: 1rem; }
+.grad { background: linear-gradient(100deg, var(--blue2), var(--ice) 60%, var(--blue2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.lede { color: var(--muted); font-size: 1.15rem; max-width: 36rem; text-wrap: pretty; }
+section { padding-block: clamp(4rem, 9vw, 7.5rem); }
+.section-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 24rem); gap: 1.5rem 4rem; align-items: end; margin-bottom: clamp(2rem, 5vw, 3.25rem); }
+.section-head p { color: var(--muted); }
+@media (max-width: 52rem) { .section-head { grid-template-columns: minmax(0, 1fr); } }
+.reveal { transform: translateY(24px); transition: transform .9s var(--ease); }
+.reveal.in { transform: none; }
+
+/* Header */
+.site-header { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 50; background: color-mix(in srgb, var(--bg) 82%, transparent); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--line); }
+.site-header .wrap { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 1.5rem; min-height: 4.4rem; }
+.brand { display: inline-flex; align-items: center; gap: .65rem; text-decoration: none; font-family: var(--font-display); font-weight: 800; font-size: 1.05rem; letter-spacing: .08em; text-transform: uppercase; }
+.brand svg { width: 2.2rem; height: auto; }
+.nav { display: flex; justify-content: center; gap: 1.9rem; }
+.nav a { text-decoration: none; font-size: .93rem; color: var(--muted); padding-block: .35rem; position: relative; transition: color .25s; }
+.nav a::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: var(--blue2); transform: scaleX(0); transform-origin: left; transition: transform .35s var(--ease); }
+.nav a:hover, .nav a[aria-current="true"] { color: var(--fg); }
+.nav a:hover::after, .nav a[aria-current="true"]::after { transform: scaleX(1); }
+.menu-btn { display: none; width: 2.6rem; height: 2.6rem; border-radius: 50%; border: 1px solid var(--line); background: transparent; place-items: center; }
+.menu-btn svg { width: 1.2rem; stroke: var(--fg); fill: none; stroke-width: 1.6; stroke-linecap: round; }
+@media (max-width: 56rem) {
+  .site-header .wrap { grid-template-columns: 1fr auto auto; }
+  .nav { position: absolute; top: 100%; left: 0; right: 0; flex-direction: column; gap: 0; background: var(--bg); border-bottom: 1px solid var(--line); padding: .5rem max(16px, env(safe-area-inset-left, 0px)) 1rem; display: none; }
+  .nav.open { display: flex; }
+  .nav a { padding-block: .9rem; border-bottom: 1px solid var(--line); font-size: 1.05rem; }
+  .nav a::after { display: none; }
+  .menu-btn { display: inline-grid; }
+}
+.site-header .btn { padding: .65rem 1.2rem; font-size: .9rem; }
+@media (max-width: 30rem) { .site-header .btn { display: none; } .site-header .wrap { grid-template-columns: 1fr auto; } }
+
+/* Buttons */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: .6rem; padding: .95rem 1.6rem; border-radius: 99px; border: 1px solid var(--line); background: transparent; text-decoration: none; font-weight: 600; font-size: .98rem; transition: transform .3s var(--ease), background .3s, border-color .3s, box-shadow .3s; }
+.btn:hover { transform: translateY(-2px); border-color: var(--blue2); }
+.btn.primary { background: var(--blue); border-color: var(--blue); color: #fff; box-shadow: 0 8px 30px -8px var(--glow); }
+.btn.primary:hover { background: var(--blue2); border-color: var(--blue2); box-shadow: 0 12px 38px -6px var(--glow); }
+.btn .arrow { transition: transform .3s var(--ease); }
+.btn:hover .arrow { transform: translateX(4px); }
+
+/* Hero */
+.hero { position: relative; overflow: hidden; padding-block: clamp(3rem, 7vw, 6rem) clamp(3.5rem, 8vw, 6.5rem); isolation: isolate; }
+.hero::before, .hero::after { content: ""; position: absolute; z-index: -1; border-radius: 50%; filter: blur(70px); pointer-events: none; }
+.hero::before { width: 38rem; height: 38rem; right: -8rem; top: -10rem; background: radial-gradient(closest-side, rgba(47,107,255,.5), transparent); animation: drift 14s ease-in-out infinite alternate; }
+.hero::after { width: 30rem; height: 30rem; left: -10rem; bottom: -12rem; background: radial-gradient(closest-side, rgba(20,48,140,.7), transparent); animation: drift 18s ease-in-out infinite alternate-reverse; }
+@keyframes drift { to { transform: translate(40px, 30px) scale(1.12); } }
+.hero .glow { position: absolute; inset: 0; z-index: -1; background: radial-gradient(22rem circle at var(--mx, 70%) var(--my, 30%), rgba(91,140,255,.16), transparent 60%); pointer-events: none; }
+.hero .wrap { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: clamp(2rem, 5vw, 4.5rem); align-items: center; }
+.hero h1 { font-family: var(--font-display); font-weight: 800; font-size: clamp(2.9rem, 8.2vw, 6.4rem); line-height: .96; letter-spacing: -.03em; margin-block: 1.25rem 1.5rem; text-wrap: balance; }
+.hero .cta { display: flex; flex-wrap: wrap; gap: .85rem; margin-top: 2rem; }
+.roles { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 2.25rem; }
+.roles li { font-family: var(--font-mono); font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; padding: .4rem .85rem; border: 1px solid var(--line); border-radius: 99px; color: var(--muted); background: color-mix(in srgb, var(--surface) 70%, transparent); }
+.rise { animation: rise .9s var(--ease) both; }
+.rise.d1 { animation-delay: .08s; } .rise.d2 { animation-delay: .18s; } .rise.d3 { animation-delay: .3s; } .rise.d4 { animation-delay: .42s; }
+@keyframes rise { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+@media (max-width: 56rem) { .hero .wrap { grid-template-columns: minmax(0, 1fr); } }
+
+/* Editor window */
+.editor { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; box-shadow: 0 40px 80px -30px rgba(0, 0, 0, .8), 0 0 0 1px rgba(91,140,255,.06) inset; }
+.editor-bar { display: flex; align-items: center; gap: .4rem; padding: .65rem .9rem; border-bottom: 1px solid var(--line); background: var(--bg2); }
+.editor-bar i { width: .6rem; height: .6rem; border-radius: 50%; background: var(--line); }
+.editor-bar span { margin-left: auto; font-family: var(--font-mono); font-size: .68rem; letter-spacing: .08em; color: var(--muted); }
+.monitor { position: relative; aspect-ratio: 16 / 9; background: #02040A; overflow: hidden; display: grid; place-items: center; }
+.monitor .bg { position: absolute; inset: -40%; background: conic-gradient(from 0deg, #0A1E5C, #2F6BFF, #071238, #5B8CFF, #0A1E5C); animation: spin 16s linear infinite; filter: blur(40px); opacity: .75; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.monitor .title { position: relative; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.2rem, 3.6vw, 2.2rem); letter-spacing: .1em; text-transform: uppercase; text-align: center; text-shadow: 0 4px 30px rgba(0,0,0,.5); }
+.monitor .title small { display: block; font-family: var(--font-mono); font-weight: 400; font-size: .6em; letter-spacing: .2em; opacity: .8; margin-top: .4rem; }
+.monitor .tc { position: absolute; left: .75rem; bottom: .6rem; font-family: var(--font-mono); font-size: .75rem; letter-spacing: .08em; font-variant-numeric: tabular-nums; background: rgba(2,4,10,.6); padding: .15rem .5rem; border-radius: 4px; }
+.monitor .rec { position: absolute; right: .75rem; top: .65rem; font-family: var(--font-mono); font-size: .66rem; letter-spacing: .12em; display: flex; align-items: center; gap: .4rem; }
+.monitor .rec::before { content: ""; width: .5rem; height: .5rem; border-radius: 50%; background: #FF4D5E; animation: blink 1.4s steps(2) infinite; }
+@keyframes blink { 50% { opacity: .2; } }
+.tracks { position: relative; padding: .75rem .9rem 1rem 3.2rem; display: grid; gap: .45rem; }
+.track { position: relative; height: 1.7rem; }
+.track::before { content: attr(data-l); position: absolute; left: -2.4rem; top: 50%; transform: translateY(-50%); font-family: var(--font-mono); font-size: .62rem; color: var(--muted); }
+.clip { position: absolute; top: 0; bottom: 0; border-radius: 5px; padding: 0 .5rem; font-family: var(--font-mono); font-size: .62rem; line-height: 1.7rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff; }
+.clip.a { background: linear-gradient(180deg, #3C78FF, #2554C9); }
+.clip.b { background: linear-gradient(180deg, #5B8CFF, #3560D8); }
+.clip.c { background: linear-gradient(180deg, #1C3B8F, #14296A); }
+.clip.fx { background: linear-gradient(180deg, #7FA4FF, #4F78E0); color: #05102E; }
+.wave { background: repeating-linear-gradient(90deg, #2A58D6 0 2px, transparent 2px 5px); -webkit-mask: linear-gradient(0deg, transparent 0, #000 0, #000 100%); opacity: .8; }
+.playhead { position: absolute; top: .4rem; bottom: .6rem; width: 2px; background: #fff; left: 3.2rem; box-shadow: 0 0 12px rgba(255,255,255,.6); pointer-events: none; }
+.playhead::before { content: ""; position: absolute; top: -4px; left: -5px; border: 6px solid transparent; border-top-color: #fff; border-bottom: 0; }
+.editor-note { padding: .6rem .9rem; border-top: 1px solid var(--line); font-family: var(--font-mono); font-size: .66rem; color: var(--muted); letter-spacing: .06em; display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+
+/* Marquee */
+.marquee { border-block: 1px solid var(--line); overflow: hidden; padding-block: 1.1rem; background: var(--bg2); }
+.marquee-track { display: flex; width: max-content; gap: 2.5rem; animation: slide 45s linear infinite; }
+.marquee span { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.2rem, 2.6vw, 1.8rem); white-space: nowrap; color: color-mix(in srgb, var(--ice) 55%, var(--bg)); text-transform: uppercase; letter-spacing: .02em; }
+.marquee span::after { content: "∞"; margin-left: 2.5rem; color: var(--blue); }
+@keyframes slide { to { transform: translateX(-50%); } }
+
+/* Services */
+.svc-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; }
+@media (max-width: 62rem) { .svc-grid { grid-template-columns: minmax(0, 1fr); } }
+.svc-col { background: linear-gradient(180deg, var(--surface), var(--bg2)); border: 1px solid var(--line); border-radius: var(--radius); padding: clamp(1.4rem, 3vw, 2.2rem); }
+.svc-col > header { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--line); margin-bottom: .5rem; }
+.svc-col h3 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.6rem, 3vw, 2.2rem); letter-spacing: -.01em; }
+.svc-col header span { font-family: var(--font-mono); font-size: .72rem; letter-spacing: .1em; color: var(--blue2); }
+.sub { padding-block: 1.25rem; border-bottom: 1px dashed var(--line); }
+.sub:last-child { border-bottom: 0; padding-bottom: 0; }
+.sub h4 { font-family: var(--font-mono); font-weight: 500; font-size: .74rem; letter-spacing: .14em; text-transform: uppercase; color: var(--ice); margin-bottom: .8rem; }
+.chips { display: flex; flex-wrap: wrap; gap: .45rem; }
+.chips li { font-size: .92rem; padding: .38rem .8rem; border: 1px solid var(--line); border-radius: 99px; background: var(--bg); color: color-mix(in srgb, var(--fg) 88%, var(--muted)); transition: border-color .25s, background .25s, color .25s, transform .25s var(--ease); cursor: default; }
+.chips li:hover { border-color: var(--blue2); background: color-mix(in srgb, var(--blue) 18%, var(--bg)); color: #fff; transform: translateY(-2px); }
+.tools { margin-top: 2rem; display: flex; flex-wrap: wrap; gap: .6rem 1.4rem; align-items: center; color: var(--muted); font-family: var(--font-mono); font-size: .78rem; letter-spacing: .06em; }
+.tools b { color: var(--fg); font-weight: 500; }
+
+/* Work */
+.filters { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1.75rem; }
+.chip { padding: .5rem 1.1rem; border-radius: 99px; border: 1px solid var(--line); background: transparent; font-size: .9rem; transition: all .25s; }
+.chip:hover { border-color: var(--blue2); }
+.chip[aria-pressed="true"] { background: var(--blue); border-color: var(--blue); color: #fff; }
+.work-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; }
+@media (max-width: 62rem) { .work-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 36rem) { .work-grid { grid-template-columns: minmax(0, 1fr); } }
+.work { all: unset; box-sizing: border-box; display: flex; flex-direction: column; gap: .8rem; cursor: pointer; min-width: 0; }
+.work[hidden] { display: none; }
+.work:focus-visible { outline: 2px solid var(--blue2); outline-offset: 4px; border-radius: var(--radius); }
+.work .art { position: relative; aspect-ratio: 4 / 3; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); background: var(--surface); transition: border-color .3s, transform .5s var(--ease), box-shadow .5s; }
+.work .art svg { width: 100%; height: 100%; display: block; transition: transform .8s var(--ease); }
+.work:hover .art { border-color: var(--blue2); transform: translateY(-4px); box-shadow: 0 24px 50px -20px var(--glow); }
+.work:hover .art svg { transform: scale(1.06); }
+.work .view { position: absolute; right: .8rem; bottom: .8rem; padding: .35rem .8rem; border-radius: 99px; background: rgba(4,6,12,.75); border: 1px solid var(--line); font-family: var(--font-mono); font-size: .68rem; letter-spacing: .1em; opacity: 0; transform: translateY(6px); transition: all .35s var(--ease); }
+.work:hover .view, .work:focus-visible .view { opacity: 1; transform: none; }
+.work .meta { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
+.work h3 { font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; letter-spacing: -.01em; }
+.work .cat { font-family: var(--font-mono); font-size: .68rem; letter-spacing: .12em; text-transform: uppercase; color: var(--blue2); white-space: nowrap; }
+.note { margin-top: 1.5rem; font-family: var(--font-mono); font-size: .72rem; color: var(--muted); letter-spacing: .05em; }
+
+/* Modal */
+.modal { position: fixed; inset: 0; z-index: 90; display: none; align-items: center; justify-content: center; padding: max(1rem, env(safe-area-inset-top, 0px)) max(1rem, env(safe-area-inset-right, 0px)) max(1rem, env(safe-area-inset-bottom, 0px)) max(1rem, env(safe-area-inset-left, 0px)); background: rgba(2, 4, 10, .82); backdrop-filter: blur(6px); }
+.modal.on { display: flex; animation: fade .3s both; }
+@keyframes fade { from { opacity: 0; } }
+.modal-card { width: min(60rem, 100%); max-height: 100%; overflow: auto; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); animation: rise .5s var(--ease) both; }
+@media (max-width: 52rem) { .modal-card { grid-template-columns: minmax(0, 1fr); } }
+.modal-card .art { aspect-ratio: 4 / 3; background: var(--bg2); }
+.modal-card .art svg { width: 100%; height: 100%; display: block; }
+.modal-info { padding: clamp(1.25rem, 3vw, 2rem); display: grid; gap: 1rem; align-content: start; position: relative; }
+.modal-info h3 { font-family: var(--font-display); font-weight: 800; font-size: 1.9rem; letter-spacing: -.02em; line-height: 1.05; padding-right: 2.5rem; }
+.modal-info p { color: var(--muted); font-size: .98rem; }
+.kv { display: grid; gap: .55rem; font-size: .9rem; }
+.kv div { display: flex; justify-content: space-between; gap: 1rem; padding-bottom: .55rem; border-bottom: 1px solid var(--line); }
+.kv span:first-child { font-family: var(--font-mono); font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.kv span:last-child { text-align: right; }
+.x { position: absolute; top: 1rem; right: 1rem; width: 2.3rem; height: 2.3rem; border-radius: 50%; border: 1px solid var(--line); background: var(--bg2); display: grid; place-items: center; }
+.x svg { width: 1rem; stroke: var(--fg); fill: none; stroke-width: 1.8; stroke-linecap: round; }
+.x:hover { border-color: var(--blue2); }
+
+/* Packages */
+.tabs { display: inline-flex; flex-wrap: wrap; gap: .35rem; padding: .35rem; border: 1px solid var(--line); border-radius: 99px; background: var(--bg2); margin-bottom: 2rem; }
+.tab { padding: .6rem 1.3rem; border-radius: 99px; border: 0; background: transparent; font-weight: 600; font-size: .92rem; color: var(--muted); transition: all .25s; }
+.tab:hover { color: var(--fg); }
+.tab[aria-selected="true"] { background: var(--blue); color: #fff; box-shadow: 0 6px 20px -6px var(--glow); }
+.plans { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; align-items: stretch; }
+@media (max-width: 62rem) { .plans { grid-template-columns: minmax(0, 1fr); } }
+.plan { position: relative; display: flex; flex-direction: column; gap: 1rem; padding: clamp(1.4rem, 3vw, 2rem); border: 1px solid var(--line); border-radius: var(--radius); background: linear-gradient(180deg, var(--surface), var(--bg2)); animation: rise .6s var(--ease) both; min-width: 0; }
+.plan:nth-child(2) { animation-delay: .07s; } .plan:nth-child(3) { animation-delay: .14s; }
+.plan.hot { border-color: var(--blue); background: linear-gradient(180deg, color-mix(in srgb, var(--blue) 22%, var(--surface)), var(--surface) 55%); box-shadow: 0 30px 60px -30px var(--glow); }
+.plan .flag { position: absolute; top: -.7rem; left: 1.5rem; padding: .2rem .75rem; border-radius: 99px; background: var(--blue); color: #fff; font-family: var(--font-mono); font-size: .66rem; letter-spacing: .12em; text-transform: uppercase; }
+.plan h3 { font-family: var(--font-display); font-weight: 700; font-size: 1.5rem; letter-spacing: -.01em; }
+.plan .desc { color: var(--muted); font-size: .95rem; min-height: 2.9rem; }
+.price { display: flex; align-items: baseline; gap: .4rem; font-family: var(--font-display); font-weight: 800; font-size: 3rem; letter-spacing: -.03em; line-height: 1; font-variant-numeric: tabular-nums; }
+.price small { font-family: var(--font-mono); font-weight: 400; font-size: .75rem; letter-spacing: .08em; color: var(--muted); }
+.plan ul { display: grid; gap: .6rem; padding-top: 1rem; border-top: 1px solid var(--line); flex: 1; align-content: start; }
+.plan li { display: grid; grid-template-columns: 1.1rem minmax(0, 1fr); gap: .65rem; font-size: .95rem; }
+.plan li::before { content: ""; width: .5rem; height: .5rem; margin-top: .5rem; border-radius: 50%; background: var(--blue2); box-shadow: 0 0 10px var(--blue); }
+.plan .btn { width: 100%; }
+.addons { margin-top: 2rem; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; padding: 1.25rem; border: 1px dashed var(--line); border-radius: var(--radius); }
+@media (max-width: 62rem) { .addons { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 30rem) { .addons { grid-template-columns: minmax(0, 1fr); } }
+.addons div span { display: block; font-family: var(--font-mono); font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.addons div b { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; }
+.retainer { margin-top: 1.25rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem 2rem; padding: clamp(1.25rem, 3vw, 2rem); border-radius: var(--radius); border: 1px solid var(--blue); background: radial-gradient(40rem 12rem at 90% 0, rgba(47,107,255,.35), transparent), var(--surface); }
+.retainer h3 { font-family: var(--font-display); font-weight: 700; font-size: 1.6rem; letter-spacing: -.01em; }
+.retainer p { color: var(--muted); max-width: 38rem; margin-top: .3rem; }
+
+/* Process */
+.steps { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 1rem; counter-reset: s; }
+@media (max-width: 70rem) { .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 36rem) { .steps { grid-template-columns: minmax(0, 1fr); } }
+.step { padding: 1.4rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); position: relative; transition: border-color .3s, transform .4s var(--ease); counter-increment: s; }
+.step:hover { border-color: var(--blue2); transform: translateY(-4px); }
+.step::before { content: "0" counter(s); font-family: var(--font-mono); font-size: .75rem; letter-spacing: .12em; color: var(--blue2); }
+.step h3 { font-family: var(--font-display); font-weight: 700; font-size: 1.35rem; margin-block: .6rem .5rem; }
+.step p { color: var(--muted); font-size: .93rem; }
+.step .t { display: inline-block; margin-top: .9rem; font-family: var(--font-mono); font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; padding: .2rem .6rem; border: 1px solid var(--line); border-radius: 99px; color: var(--ice); }
+
+/* FAQ */
+.faq { display: grid; gap: .75rem; max-width: 52rem; }
+details { border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); transition: border-color .25s; }
+details[open] { border-color: var(--blue); }
+summary { cursor: pointer; list-style: none; padding: 1.15rem 1.4rem; font-weight: 600; display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+summary::-webkit-details-marker { display: none; }
+summary::after { content: "+"; font-family: var(--font-mono); font-size: 1.4rem; color: var(--blue2); transition: transform .3s var(--ease); line-height: 1; }
+details[open] summary::after { transform: rotate(45deg); }
+details p { padding: 0 1.4rem 1.25rem; color: var(--muted); }
+
+/* Contact */
+.contact-grid { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(2rem, 6vw, 5rem); }
+@media (max-width: 56rem) { .contact-grid { grid-template-columns: minmax(0, 1fr); } }
+.contact-list { margin-top: 2rem; display: grid; gap: .9rem; }
+.contact-list li { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding-bottom: .9rem; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+.contact-list span { font-family: var(--font-mono); font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.contact-list code { font-family: var(--font-mono); font-size: .9rem; user-select: all; overflow-wrap: anywhere; }
+.copy { padding: .3rem .85rem; border: 1px solid var(--line); border-radius: 99px; background: transparent; font-size: .8rem; transition: border-color .25s; }
+.copy:hover { border-color: var(--blue2); }
+.panel { background: linear-gradient(180deg, var(--surface), var(--bg2)); border: 1px solid var(--line); border-radius: var(--radius); padding: clamp(1.4rem, 4vw, 2.4rem); align-self: start; }
+form { display: grid; gap: 1rem; }
+.row2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+@media (max-width: 36rem) { .row2 { grid-template-columns: minmax(0, 1fr); } }
+label { font-family: var(--font-mono); font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); display: grid; gap: .4rem; }
+input, select, textarea { width: 100%; font-family: var(--font-body); font-size: 1rem; letter-spacing: 0; text-transform: none; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: .85rem 1rem; transition: border-color .25s, box-shadow .25s; }
+textarea { min-height: 7.5rem; resize: vertical; }
+input:hover, select:hover, textarea:hover { border-color: #2B3C73; }
+input:focus-visible, select:focus-visible, textarea:focus-visible { outline: none; border-color: var(--blue2); box-shadow: 0 0 0 3px rgba(47,107,255,.25); }
+.form-note { min-height: 1.5rem; color: var(--ice); font-size: .95rem; }
+
+/* Footer */
+footer { border-top: 1px solid var(--line); padding-block: 2.5rem; background: var(--bg2); }
+footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1.5rem; }
+footer ul { display: flex; flex-wrap: wrap; gap: 1.5rem; }
+footer li a { text-decoration: none; color: var(--muted); font-size: .92rem; }
+footer li a:hover { color: var(--fg); }
+footer small { width: 100%; color: var(--muted); font-family: var(--font-mono); font-size: .7rem; letter-spacing: .08em; }
+
+/* Legal pages */
+.legal { position: fixed; inset: 0; z-index: 95; display: none; flex-direction: column; background: var(--bg); padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.legal.on { display: flex; animation: fade .3s both; }
+.legal-bar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-block: .9rem; border-bottom: 1px solid var(--line); }
+.legal-bar .tabs { margin: 0; }
+.legal-scroll { flex: 1; overflow-y: auto; padding-block: clamp(2rem, 5vw, 3.5rem) 4rem; }
+.doc { max-width: 46rem; margin-inline: auto; }
+.doc[hidden] { display: none; }
+.doc h2 { font-family: var(--font-display); font-weight: 800; font-size: clamp(2.2rem, 6vw, 3.4rem); letter-spacing: -.02em; line-height: 1.02; }
+.doc .updated { font-family: var(--font-mono); font-size: .75rem; letter-spacing: .1em; text-transform: uppercase; color: var(--blue2); margin-block: .9rem 1.5rem; }
+.doc .intro { color: var(--muted); font-size: 1.08rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--line); }
+.doc h3 { font-family: var(--font-display); font-weight: 700; font-size: 1.3rem; letter-spacing: -.01em; margin-top: 2rem; }
+.doc p, .doc li { color: var(--muted); margin-top: .6rem; }
+.doc ul { list-style: disc; padding-left: 1.25rem; }
+.doc li::marker { color: var(--blue2); }
+.doc strong { color: var(--fg); font-weight: 600; }
+.doc a { color: var(--ice); }
+.doc .fine { margin-top: 2.5rem; padding: 1rem 1.25rem; border: 1px dashed var(--line); border-radius: var(--radius); font-size: .9rem; }
+.consent { font-size: .85rem; color: var(--muted); }
+.consent a, footer .legal-links a { color: var(--ice); }
+footer .legal-links { display: flex; gap: 1.25rem; flex-wrap: wrap; width: 100%; }
+footer .legal-links a { font-size: .85rem; text-decoration: none; }
+footer .legal-links a:hover { text-decoration: underline; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+  .marquee-track { animation: none; }
+}
+</style>
+
+<header class="site-header bleed">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Sufinity Verse, home">
+      <svg viewBox="0 0 64 32" aria-hidden="true"><defs><linearGradient id="lg" x1="0" x2="1"><stop offset="0" stop-color="#2F6BFF"/><stop offset="1" stop-color="#A9C4FF"/></linearGradient></defs><path d="M32 16C26 6 16 4 10 8s-6 12 0 16 16 2 22-8c6-10 16-12 22-8s6 12 0 16-16 2-22-8Z" fill="none" stroke="url(#lg)" stroke-width="4" stroke-linecap="round"/></svg>
+      Sufinity Verse
+    </a>
+    <nav class="nav" id="nav" aria-label="Primary">
+      <a href="#services">Services</a>
+      <a href="#work">Work</a>
+      <a href="#packages">Packages</a>
+      <a href="#process">Process</a>
+      <a href="#faq">FAQ</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <a class="btn primary" href="#contact">Start a project</a>
+    <button class="menu-btn" id="menu" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav"><svg viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></svg></button>
+  </div>
+</header>
+
+<main id="top">
+  <div class="hero bleed" id="hero">
+    <div class="glow"></div>
+    <div class="wrap">
+      <div>
+        <p class="eyebrow rise">Graphic designer · Video editor · Motion artist</p>
+        <h1 class="rise d1">Design that <span class="grad">moves.</span></h1>
+        <p class="lede rise d2">Sufinity Verse is a one-person studio for brand identity, UI/UX, video editing and motion graphics. I make the visuals that brands, creators and agencies are proud to put their name on.</p>
+        <div class="cta rise d3">
+          <a class="btn primary" href="#work">View selected work <span class="arrow">→</span></a>
+          <a class="btn" href="#packages">See packages</a>
+        </div>
+        <ul class="roles rise d4">
+          <li>Branding</li><li>UI/UX</li><li>Social</li><li>Video edit</li><li>Motion</li><li>Color grade</li>
+        </ul>
+      </div>
+      <div class="editor rise d2" aria-hidden="true">
+        <div class="editor-bar"><i></i><i></i><i></i><span>SUFINITY_VERSE_SHOWREEL.prproj</span></div>
+        <div class="monitor">
+          <div class="bg"></div>
+          <div class="title" id="mon-title">Brand intro<small>24 FPS · 4K UHD</small></div>
+          <div class="rec">REC</div>
+          <div class="tc" id="tc">00:00:00:00</div>
+        </div>
+        <div class="tracks" id="tracks">
+          <div class="track" data-l="V2">
+            <div class="clip fx" style="left:6%;width:18%">Lower third</div>
+            <div class="clip fx" style="left:44%;width:14%">Title card</div>
+            <div class="clip fx" style="left:78%;width:16%">End logo</div>
+          </div>
+          <div class="track" data-l="V1">
+            <div class="clip a" style="left:0;width:24%">Brand intro</div>
+            <div class="clip b" style="left:25%;width:30%">Reel cut</div>
+            <div class="clip c" style="left:56%;width:20%">Product shot</div>
+            <div class="clip a" style="left:77%;width:23%">Outro</div>
+          </div>
+          <div class="track" data-l="A1"><div class="clip wave" style="left:0;width:100%"></div></div>
+          <div class="playhead" id="playhead"></div>
+        </div>
+        <div class="editor-note"><span>SAMPLE TIMELINE</span><span>LOOPS EVERY 14 S</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="marquee bleed" aria-hidden="true"><div class="marquee-track" id="marquee"></div></div>
+
+  <section id="services">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div><p class="eyebrow">Services</p><h2 class="h2">Everything visual, <span class="grad">under one roof.</span></h2></div>
+        <p>From a first logo to a full campaign film. Pick one service or combine them into a single, consistent look across print, screen and video.</p>
+      </div>
+      <div class="svc-grid">
+        <article class="svc-col reveal">
+          <header><h3>Graphic Design</h3><span>39 SERVICES</span></header>
+          <div class="sub"><h4>Brand identity</h4><ul class="chips">
+            <li>Logo design</li><li>Brand identity systems</li><li>Brand guidelines</li><li>Logo redesign</li><li>Stationery &amp; business cards</li><li>Rebranding</li><li>Brand naming visuals</li></ul></div>
+          <div class="sub"><h4>Print &amp; packaging</h4><ul class="chips">
+            <li>Posters &amp; flyers</li><li>Brochures &amp; catalogs</li><li>Packaging design</li><li>Label design</li><li>Menu design</li><li>Book &amp; magazine layout</li><li>Book cover design</li><li>Invitations &amp; event design</li><li>Signage &amp; vehicle wraps</li><li>Merchandise &amp; T-shirt design</li></ul></div>
+          <div class="sub"><h4>Digital &amp; social</h4><ul class="chips">
+            <li>Social media design</li><li>Ad &amp; banner creatives</li><li>YouTube thumbnails</li><li>Infographics</li><li>Pitch &amp; presentation decks</li><li>Email newsletter design</li><li>Podcast &amp; album covers</li></ul></div>
+          <div class="sub"><h4>Illustration &amp; art</h4><ul class="chips">
+            <li>Digital illustration</li><li>Vector art &amp; mascots</li><li>Typography &amp; lettering</li><li>Icon sets</li><li>Photo retouching</li><li>Photo manipulation</li><li>Product mockups</li></ul></div>
+          <div class="sub"><h4>UI/UX design</h4><ul class="chips">
+            <li>App UI design</li><li>Dashboard design</li><li>Website &amp; landing page design</li><li>Wireframes</li><li>Clickable prototypes</li><li>Design systems</li><li>UX audits</li><li>User flows</li></ul></div>
+        </article>
+        <article class="svc-col reveal">
+          <header><h3>Video &amp; Motion</h3><span>32 SERVICES</span></header>
+          <div class="sub"><h4>Video editing</h4><ul class="chips">
+            <li>Reels, Shorts &amp; TikToks</li><li>YouTube video editing</li><li>Podcast video editing</li><li>Promo &amp; ad videos</li><li>Corporate &amp; brand films</li><li>Wedding &amp; event films</li><li>Music videos</li><li>Product videos</li><li>Real estate videos</li><li>Gaming montages</li><li>Course &amp; tutorial editing</li><li>Cinematic trailers</li><li>Photo slideshow videos</li><li>Video repurposing &amp; cut-downs</li></ul></div>
+          <div class="sub"><h4>Motion graphics</h4><ul class="chips">
+            <li>Logo animation</li><li>Intros &amp; outros</li><li>2D explainer videos</li><li>Kinetic typography</li><li>Lower thirds &amp; titles</li><li>Animated infographics</li><li>Social video ads</li><li>3D text &amp; logo animation</li><li>Animated stickers &amp; overlays</li></ul></div>
+          <div class="sub"><h4>Post-production</h4><ul class="chips">
+            <li>Color grading</li><li>Color correction</li><li>Visual effects &amp; compositing</li><li>Green screen keying</li><li>Rotoscoping</li><li>Subtitles &amp; captions</li><li>Sound design</li><li>Audio cleanup &amp; mixing</li><li>Screen recording polish</li></ul></div>
+        </article>
+      </div>
+      <p class="tools reveal"><span>Tools of the trade</span><b>Photoshop</b><b>Illustrator</b><b>InDesign</b><b>Figma</b><b>Premiere Pro</b><b>After Effects</b><b>DaVinci Resolve</b><b>Audition</b></p>
+    </div>
+  </section>
+
+  <div class="bleed" style="background: var(--bg2); border-block: 1px solid var(--line);">
+    <section id="work">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div><p class="eyebrow">Selected work</p><h2 class="h2">Recent <span class="grad">projects.</span></h2></div>
+          <p>Filter by discipline and open any project for the brief, the deliverables and the tools used.</p>
+        </div>
+        <div class="filters reveal" role="group" aria-label="Filter projects" id="filters"></div>
+        <div class="work-grid" id="work-grid"></div>
+        <p class="note">Sample concept work for demonstration. Replace with your real projects before launch.</p>
+      </div>
+    </section>
+  </div>
+
+  <section id="packages">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div><p class="eyebrow">Packages</p><h2 class="h2">Clear prices, <span class="grad">no surprises.</span></h2></div>
+        <p>Every package has a fixed scope, set revisions and a delivery time. Need something different? I quote custom work within 24 hours. All prices in USD.</p>
+      </div>
+      <div class="tabs reveal" role="tablist" aria-label="Package type" id="tabs"></div>
+      <div class="plans" id="plans" role="tabpanel"></div>
+      <div class="addons reveal">
+        <div><span>Rush delivery</span><b>+30%</b></div>
+        <div><span>Extra revision round</span><b>$25 each</b></div>
+        <div><span>Source files</span><b>from $50</b></div>
+        <div><span>Extra aspect ratio</span><b>$30 per size</b></div>
+      </div>
+      <div class="retainer reveal">
+        <div><h3>Design + video retainer</h3><p>A steady monthly slot for brands and creators who need new graphics and videos every week. Priority turnaround, one point of contact, one consistent look.</p></div>
+        <div style="display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap"><div class="price">$1,200<small>/ MONTH</small></div><button class="btn primary" type="button" data-plan="Retainer, $1,200/month">Book a slot <span class="arrow">→</span></button></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="bleed" style="background: var(--bg2); border-block: 1px solid var(--line);">
+    <section id="process">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div><p class="eyebrow">Process</p><h2 class="h2">From brief to <span class="grad">delivery.</span></h2></div>
+          <p>A simple, predictable workflow so you always know what happens next.</p>
+        </div>
+        <div class="steps">
+          <div class="step reveal"><h3>Brief</h3><p>You share goals, references and deadlines. I reply with a scope and a quote.</p><span class="t">Reply in 24 h</span></div>
+          <div class="step reveal"><h3>Concept</h3><p>Moodboards, sketches or a rough cut, so direction is agreed before the heavy work.</p><span class="t">1–3 days</span></div>
+          <div class="step reveal"><h3>Create</h3><p>Full design or edit with motion, sound and color. Work-in-progress links shared along the way.</p><span class="t">2–14 days</span></div>
+          <div class="step reveal"><h3>Review</h3><p>You give feedback, I refine. Revision rounds are included in every package.</p><span class="t">2–3 rounds</span></div>
+          <div class="step reveal"><h3>Deliver</h3><p>Final files in every format you need, organised and ready to publish.</p><span class="t">Final files</span></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <section id="faq">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div><p class="eyebrow">FAQ</p><h2 class="h2">Good <span class="grad">questions.</span></h2></div>
+        <p>Still unsure? Send a message and I will answer the same day.</p>
+      </div>
+      <div class="faq reveal">
+        <details open><summary>How long does a project take?</summary><p>A logo usually takes 3 to 5 days, a brand identity 7 to 10 days, a short video 2 to 4 days and an explainer or campaign film 1 to 3 weeks. You get an exact date with your quote.</p></details>
+        <details><summary>How do revisions work?</summary><p>Each package lists its revision rounds. A round is one consolidated set of feedback. Extra rounds are $25 each, and small tweaks are never counted as a round.</p></details>
+        <details><summary>Which files will I receive?</summary><p>Logos come as SVG, PNG and PDF. Print work comes as press-ready PDF. Videos are delivered as MP4 in the sizes you need, such as 16:9, 9:16 and 1:1. Source files (AI, PSD, Figma, AEP) are available as an add-on.</p></details>
+        <details><summary>How does payment work?</summary><p>50% upfront to book your slot and 50% on approval, before final files are released. Retainers are billed monthly in advance.</p></details>
+        <details><summary>Do you do websites or software development?</summary><p>No. I design interfaces and websites in Figma and hand them over for your developer to build, but I do not write code or build apps.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <div class="bleed" style="background: var(--bg2); border-top: 1px solid var(--line);">
+    <section id="contact">
+      <div class="wrap contact-grid">
+        <div class="reveal">
+          <p class="eyebrow">Contact</p>
+          <h2 class="h2">Let us make something <span class="grad">unforgettable.</span></h2>
+          <p class="lede" style="margin-top:1.25rem">Tell me what you are building and when you need it. You will hear back within 24 hours.</p>
+          <ul class="contact-list">
+            <li><span>Email</span><code id="mail">sufinityverse.studio@gmail.com</code><button class="copy" type="button" data-copy="#mail">Copy</button></li>
+            <li><span>Phone / WhatsApp</span><code id="wa">03042047457</code><span style="display:flex;gap:.5rem;flex-wrap:wrap;text-transform:none;letter-spacing:0"><button class="copy" type="button" data-copy="#wa">Copy</button><a class="copy" href="https://wa.me/923042047457" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">Open WhatsApp</a></span></li>
+            <li><span>Hours</span><code>Mon–Sat · 10:00–19:00 PKT</code></li>
+          </ul>
+        </div>
+        <div class="panel reveal">
+          <form id="contact-form" novalidate>
+            <div class="row2">
+              <label for="f-name">Name<input id="f-name" type="text" autocomplete="name" placeholder="Your name"></label>
+              <label for="f-email">Email<input id="f-email" type="email" autocomplete="email" placeholder="you@example.com" required></label>
+            </div>
+            <div class="row2">
+              <label for="f-service">I need
+                <select id="f-service">
+                  <option>Logo &amp; brand identity</option><option>Print &amp; packaging design</option><option>Social media design</option><option>UI/UX design</option><option>Video editing</option><option>Motion graphics</option><option>Retainer, design + video</option><option>Something else</option>
+                </select></label>
+              <label for="f-budget">Budget (USD)
+                <select id="f-budget"><option>Under $200</option><option>$200 – $500</option><option>$500 – $1,500</option><option>$1,500 and up</option><option>Not sure yet</option></select></label>
+            </div>
+            <label for="f-msg">Project details<textarea id="f-msg" placeholder="What is the project, who is it for, and when do you need it?"></textarea></label>
+            <button class="btn primary" type="submit">Send message <span class="arrow">→</span></button>
+            <p class="consent">By sending this form you agree to the <a href="#privacy" data-legal="privacy">Privacy Policy</a> and <a href="#terms" data-legal="terms">Terms of Service</a>.</p>
+            <p class="form-note" id="form-note" role="status"></p>
+          </form>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="bleed">
+  <div class="wrap">
+    <a class="brand" href="#top">
+      <svg viewBox="0 0 64 32" aria-hidden="true"><path d="M32 16C26 6 16 4 10 8s-6 12 0 16 16 2 22-8c6-10 16-12 22-8s6 12 0 16-16 2-22-8Z" fill="none" stroke="#5B8CFF" stroke-width="4" stroke-linecap="round"/></svg>
+      Sufinity Verse
+    </a>
+    <ul>
+      <li><a href="#services">Services</a></li><li><a href="#work">Work</a></li><li><a href="#packages">Packages</a></li><li><a href="#faq">FAQ</a></li><li><a href="#contact">Contact</a></li>
+    </ul>
+    <div class="legal-links"><a href="#privacy" data-legal="privacy">Privacy Policy</a><a href="#terms" data-legal="terms">Terms of Service</a></div>
+    <small>© 2026 SUFINITY VERSE · GRAPHIC DESIGN · VIDEO EDITING · MOTION</small>
+  </div>
+</footer>
+
+<div class="legal" id="legal" role="dialog" aria-modal="true" aria-label="Legal" aria-hidden="true">
+  <div class="legal-bar">
+    <div class="tabs" role="tablist" aria-label="Legal documents">
+      <button class="tab" type="button" role="tab" data-doc="privacy" aria-selected="true">Privacy Policy</button>
+      <button class="tab" type="button" role="tab" data-doc="terms" aria-selected="false">Terms of Service</button>
+    </div>
+    <button class="x" id="legal-close" type="button" aria-label="Close" style="position:static"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
+  <div class="legal-scroll" id="legal-scroll">
+    <article class="doc" id="doc-privacy">
+      <h2>Privacy Policy</h2>
+      <p class="updated">Effective November 27, 2026</p>
+      <p class="intro">This policy explains what information Sufinity Verse ("I", "me", "the studio") collects when you visit this website or contact me about a project, how it is used, and the choices you have.</p>
+
+      <h3>1. Information I collect</h3>
+      <ul>
+        <li><strong>Information you give me:</strong> your name, email address, the service and budget range you choose, and any project details, files or links you send through the contact form or by email or messaging.</li>
+        <li><strong>Project materials:</strong> logos, footage, scripts, photos, brand assets and feedback you share so I can do the work.</li>
+        <li><strong>Payment details:</strong> I do not store card numbers. Payments are handled by the payment provider or bank transfer method used for your invoice.</li>
+        <li><strong>Basic technical data:</strong> this site does not use advertising trackers. Your browser may send standard data such as IP address and device type to the hosting provider when the page loads.</li>
+      </ul>
+
+      <h3>2. How I use your information</h3>
+      <ul>
+        <li>To reply to enquiries, prepare quotes and deliver the work you commissioned.</li>
+        <li>To send invoices, project updates and final files.</li>
+        <li>To keep records for accounting, tax and legal reasons.</li>
+        <li>To improve the website and my services.</li>
+      </ul>
+      <p>I do not sell your personal information and I do not use it for third-party advertising.</p>
+
+      <h3>3. Cookies and third-party services</h3>
+      <p>This site does not set tracking or advertising cookies. It loads fonts from Google Fonts, which means your browser connects to Google's servers and Google may receive your IP address. See Google's privacy policy for how it handles that data. If analytics, chat or booking tools are added later, this policy will be updated to name them.</p>
+
+      <h3>4. Sharing your information</h3>
+      <p>I share information only when needed to do the work or as required by law, for example with payment processors, file-sharing and cloud storage tools, email providers, or collaborators I bring in on your project under a confidentiality agreement. Your project files are not shared publicly.</p>
+
+      <h3>5. Portfolio use of your project</h3>
+      <p>Finished work may be shown in my portfolio and on social media as an example of my services. If your project is confidential, tell me before work begins and I will not publish it. Terms of Service section 7 covers this in more detail.</p>
+
+      <h3>6. How long I keep information</h3>
+      <p>Enquiry messages are kept for up to 24 months. Project files and records are kept for up to 24 months after delivery so I can handle revisions, and invoices are kept as long as accounting law requires. You can ask me to delete your files sooner.</p>
+
+      <h3>7. Your rights</h3>
+      <p>You may ask me to access, correct, export or delete the personal information I hold about you, or object to how it is used. Email me at the address below and I will respond within 30 days.</p>
+
+      <h3>8. Security</h3>
+      <p>I use reputable services and access controls to protect your information. No online system is completely secure, so please avoid sending sensitive personal data such as passwords or government ID numbers.</p>
+
+      <h3>9. Children</h3>
+      <p>This website is not directed to children under 13, and I do not knowingly collect their personal information.</p>
+
+      <h3>10. Changes to this policy</h3>
+      <p>I may update this policy from time to time. The effective date above shows when it last changed. Continued use of the site means you accept the updated version.</p>
+
+      <h3>11. Contact</h3>
+      <p>Questions about privacy: <a href="mailto:sufinityverse.studio@gmail.com">sufinityverse.studio@gmail.com</a></p>
+      <p class="fine">This document is a general template and is not legal advice. Have a qualified lawyer review it for your country and business before relying on it.</p>
+    </article>
+
+    <article class="doc" id="doc-terms" hidden>
+      <h2>Terms of Service</h2>
+      <p class="updated">Effective November 27, 2026</p>
+      <p class="intro">These terms apply to all graphic design, UI/UX, video editing and motion graphics services provided by Sufinity Verse ("I", "me", "the studio") to you ("the client"). By requesting a quote, paying an invoice or approving a project, you agree to them.</p>
+
+      <h3>1. Services</h3>
+      <p>I provide creative services including brand identity, logo and print design, social media graphics, UI/UX design, illustration, video editing, motion graphics, color grading and related post-production. The exact scope, deliverables, price and timeline are set out in your quote, package or written agreement. I do not provide web development, coding or software development.</p>
+
+      <h3>2. Quotes and booking</h3>
+      <p>Prices on this site are in US dollars (USD) and are a guide. A final quote is confirmed in writing after I understand your project. A project is booked once you approve the quote and pay the deposit. Quotes are valid for 14 days.</p>
+
+      <h3>3. Payments</h3>
+      <ul>
+        <li>A <strong>50% deposit</strong> is due before work starts and the balance is due on approval, before final files are released.</li>
+        <li>Monthly packages and retainers are billed in advance each month.</li>
+        <li>Late invoices may pause work, and rush or out-of-scope work is billed separately.</li>
+        <li>You are responsible for any bank, transfer or currency conversion fees.</li>
+      </ul>
+
+      <h3>4. Timelines and client input</h3>
+      <p>Delivery times start when I have received your deposit and all the materials I need (brand assets, footage, scripts, references and feedback). Delays in client feedback or materials move the delivery date. Rush delivery is available for an extra 30% where my schedule allows.</p>
+
+      <h3>5. Revisions</h3>
+      <p>Each package includes the number of revision rounds listed on this site or in your quote. A revision round is one consolidated set of feedback. Extra rounds cost $25 each. Changing the direction, concept or scope after approval is treated as new work and quoted separately.</p>
+
+      <h3>6. Ownership and usage rights</h3>
+      <ul>
+        <li>On full payment, you own the final approved deliverables for the purpose agreed in the quote.</li>
+        <li>Until full payment is received, all work remains my property and may not be used publicly.</li>
+        <li>Source files (such as AI, PSD, Figma or After Effects projects), sketches, rejected concepts and working files stay with me unless you purchase them as an add-on.</li>
+        <li>I keep the right to reuse my general techniques, templates and tools, and underlying code or presets that are not specific to your brand.</li>
+      </ul>
+
+      <h3>7. Portfolio rights</h3>
+      <p>Unless we agree otherwise in writing before work begins, I may show your finished project in my portfolio, website and social media. If you need confidentiality or a non-disclosure agreement, tell me at booking. Confidential projects may cost more where it limits my ability to showcase the work.</p>
+
+      <h3>8. Client materials and third-party assets</h3>
+      <p>You confirm that you own, or have permission to use, all logos, footage, music, fonts, images and text you give me. Unless stated in the quote, project prices do not include licensing for stock images, stock footage, music or paid fonts. If these are needed, I will tell you the cost first and the license will be in your name or as the license allows. I am not responsible for claims that arise from materials you supplied.</p>
+
+      <h3>9. Cancellation and refunds</h3>
+      <ul>
+        <li>If you cancel before work begins, the deposit is refunded minus any payment fees.</li>
+        <li>If you cancel after work has begun, the deposit is non-refundable and you pay for work completed up to that point if it exceeds the deposit.</li>
+        <li>Because creative work is delivered digitally, refunds are not given after final files are delivered and approved.</li>
+        <li>If I cannot deliver a project for reasons within my control, I will refund the amount for the undelivered work.</li>
+      </ul>
+
+      <h3>10. Creative judgment and results</h3>
+      <p>I will bring professional skill and care to every project. Design and video are partly subjective, so I cannot guarantee a particular business result such as sales, followers, views or platform approval.</p>
+
+      <h3>11. Confidentiality</h3>
+      <p>I keep your unpublished materials and business information confidential and use them only to deliver your project, subject to section 7.</p>
+
+      <h3>12. Limitation of liability</h3>
+      <p>To the fullest extent allowed by law, my total liability for any claim connected to my services is limited to the amount you paid for the specific project. I am not liable for indirect or consequential losses, lost profits or lost data. Please keep your own backups of your original files.</p>
+
+      <h3>13. Website use</h3>
+      <p>The content, design and sample work on this website belongs to Sufinity Verse and may not be copied, resold or presented as your own without written permission. Sample concepts shown on this site are for demonstration.</p>
+
+      <h3>14. Governing law</h3>
+      <p>These terms are governed by the laws of [your country or state]. Please contact me first so we can try to resolve any disagreement informally before taking formal steps.</p>
+
+      <h3>15. Changes to these terms</h3>
+      <p>I may update these terms from time to time. The version in force when you book your project applies to that project.</p>
+
+      <h3>16. Contact</h3>
+      <p>Questions about these terms: <a href="mailto:sufinityverse.studio@gmail.com">sufinityverse.studio@gmail.com</a></p>
+      <p class="fine">This document is a general template and is not legal advice. Replace the bracketed governing-law text and have a qualified lawyer review it for your country and business before relying on it.</p>
+    </article>
+  </div>
+</div>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="Project details" aria-hidden="true">
+  <div class="modal-card">
+    <div class="art" id="m-art"></div>
+    <div class="modal-info">
+      <button class="x" id="m-close" type="button" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <p class="eyebrow" id="m-cat"></p>
+      <h3 id="m-title"></h3>
+      <p id="m-desc"></p>
+      <div class="kv" id="m-kv"></div>
+      <a class="btn primary" href="#contact" id="m-cta">Start a similar project <span class="arrow">→</span></a>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var $ = function (s, c) { return (c || document).querySelector(s); };
+  var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* Marquee */
+  var words = ["Brand identity", "Logo design", "UI/UX design", "Social media", "Packaging", "Illustration", "Video editing", "Motion graphics", "Color grading", "Reels & Shorts", "Explainers", "Thumbnails"];
+  $("#marquee").innerHTML = words.concat(words).map(function (w) { return "<span>" + w + "</span>"; }).join("");
+
+  /* Menu */
+  var nav = $("#nav"), mb = $("#menu");
+  function closeMenu() { nav.classList.remove("open"); mb.setAttribute("aria-expanded", "false"); }
+  mb.addEventListener("click", function () { var o = nav.classList.toggle("open"); mb.setAttribute("aria-expanded", String(o)); });
+  nav.addEventListener("click", function (e) { if (e.target.tagName === "A") closeMenu(); });
+
+  /* Hero glow follows pointer */
+  var hero = $("#hero");
+  hero.addEventListener("pointermove", function (e) { var r = hero.getBoundingClientRect(); hero.style.setProperty("--mx", (e.clientX - r.left) + "px"); hero.style.setProperty("--my", (e.clientY - r.top) + "px"); });
+
+  /* Timeline playhead, timecode (24 fps, 14 s loop) */
+  var ph = $("#playhead"), tcEl = $("#tc"), titleEl = $("#mon-title"), tracks = $("#tracks");
+  var LOOP = 14000, labels = [[0, "Brand intro"], [.25, "Reel cut"], [.44, "Title card"], [.56, "Product shot"], [.77, "Outro"]], lastLab = "";
+  function pad(n) { return (n < 10 ? "0" : "") + n; }
+  function paint(p) {
+    var left = 51.2, w = tracks.clientWidth - 51.2 - 14.4; /* 3.2rem and .9rem at 16px */
+    var cs = getComputedStyle(tracks), pl = parseFloat(cs.paddingLeft), pr = parseFloat(cs.paddingRight);
+    ph.style.left = (pl + (tracks.clientWidth - pl - pr) * p) + "px";
+    var frames = Math.floor(p * 14 * 24), s = Math.floor(frames / 24), f = frames % 24;
+    tcEl.textContent = "00:00:" + pad(s) + ":" + pad(f);
+    var lab = labels[0][1]; for (var i = 0; i < labels.length; i++) if (p >= labels[i][0]) lab = labels[i][1];
+    if (lab !== lastLab) { titleEl.innerHTML = lab + "<small>24 FPS · 4K UHD</small>"; lastLab = lab; }
+  }
+  if (reduce) { paint(.38); window.addEventListener("resize", function () { paint(.38); }); }
+  else { (function tick(now) { paint((now % LOOP) / LOOP); requestAnimationFrame(tick); })(0); }
+
+  /* Portfolio art (original abstract compositions) */
+  function art(p, i) {
+    var a = p.c[0], b = p.c[1], c = p.c[2], id = "p" + i + Math.random().toString(36).slice(2, 5), s = "";
+    var head = '<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="' + p.title + ' sample artwork" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="' + id + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="' + a + '"/><stop offset="1" stop-color="' + b + '"/></linearGradient><radialGradient id="' + id + 'r" cx=".3" cy=".25" r=".9"><stop offset="0" stop-color="' + c + '" stop-opacity=".9"/><stop offset="1" stop-color="' + c + '" stop-opacity="0"/></radialGradient></defs><rect width="400" height="300" fill="#060B1B"/><rect width="400" height="300" fill="url(#' + id + 'r)"/>';
+    if (p.kind === "logo") s = '<circle cx="200" cy="150" r="78" fill="none" stroke="url(#' + id + ')" stroke-width="14"/><circle cx="238" cy="150" r="78" fill="none" stroke="#fff" stroke-opacity=".85" stroke-width="3"/><path d="M160 150h80" stroke="#fff" stroke-width="3"/><text x="200" y="262" text-anchor="middle" font-family="Syne,sans-serif" font-weight="800" font-size="22" letter-spacing="6" fill="#E8EEFF">' + p.word + '</text>';
+    else if (p.kind === "poster") s = '<rect x="110" y="24" width="180" height="252" rx="6" fill="url(#' + id + ')"/><text x="200" y="190" text-anchor="middle" font-family="Syne,sans-serif" font-weight="800" font-size="150" fill="#04060C" fill-opacity=".85">' + p.word.charAt(0) + '</text><rect x="126" y="40" width="148" height="3" fill="#fff"/><text x="126" y="258" font-family="DM Mono,monospace" font-size="10" letter-spacing="2" fill="#fff">' + p.word + ' 2026</text><circle cx="262" cy="62" r="14" fill="#fff" fill-opacity=".9"/>';
+    else if (p.kind === "ui") s = '<rect x="132" y="22" width="136" height="256" rx="20" fill="#0B1226" stroke="#2B3C73" stroke-width="2"/><rect x="146" y="44" width="108" height="64" rx="12" fill="url(#' + id + ')"/><rect x="146" y="120" width="50" height="38" rx="9" fill="#16224A"/><rect x="204" y="120" width="50" height="38" rx="9" fill="#16224A"/><rect x="146" y="170" width="108" height="10" rx="5" fill="#2B3C73"/><rect x="146" y="188" width="76" height="10" rx="5" fill="#1B2850"/><rect x="146" y="226" width="108" height="30" rx="15" fill="' + c + '"/><polyline points="156,98 176,80 194,90 220,62 242,70" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>';
+    else if (p.kind === "motion") s = '<g fill="none" stroke="url(#' + id + ')"><circle cx="200" cy="150" r="30" stroke-width="3"/><circle cx="200" cy="150" r="56" stroke-width="2.5" stroke-opacity=".8"/><circle cx="200" cy="150" r="86" stroke-width="2" stroke-opacity=".55"/><circle cx="200" cy="150" r="120" stroke-width="1.5" stroke-opacity=".3"/></g><circle cx="256" cy="150" r="7" fill="#fff"/><circle cx="142" cy="108" r="5" fill="' + c + '"/><circle cx="244" cy="240" r="4" fill="#fff" fill-opacity=".7"/><path d="M190 132l30 18-30 18z" fill="#fff"/><rect x="40" y="272" width="320" height="4" rx="2" fill="#16224A"/><rect x="40" y="272" width="170" height="4" rx="2" fill="' + c + '"/>';
+    else if (p.kind === "social") s = '<rect x="36" y="48" width="104" height="104" rx="10" fill="url(#' + id + ')"/><rect x="148" y="48" width="104" height="104" rx="10" fill="#101A36" stroke="#2B3C73"/><rect x="260" y="48" width="104" height="104" rx="10" fill="' + c + '"/><rect x="36" y="160" width="104" height="104" rx="10" fill="#101A36" stroke="#2B3C73"/><rect x="148" y="160" width="104" height="104" rx="10" fill="url(#' + id + ')"/><rect x="260" y="160" width="104" height="104" rx="10" fill="#16224A"/><circle cx="88" cy="100" r="26" fill="#fff" fill-opacity=".9"/><path d="M168 118l18-26 18 26z" fill="#fff"/><circle cx="312" cy="100" r="24" fill="none" stroke="#04060C" stroke-width="6"/><rect x="170" y="190" width="60" height="8" rx="4" fill="#fff"/><rect x="170" y="206" width="40" height="8" rx="4" fill="#fff" fill-opacity=".6"/><circle cx="88" cy="212" r="22" fill="' + c + '"/><path d="M286 232h52M312 206v52" stroke="#5B8CFF" stroke-width="6" stroke-linecap="round"/>';
+    else s = '<rect x="40" y="46" width="320" height="180" rx="10" fill="url(#' + id + ')"/><text x="64" y="150" font-family="Syne,sans-serif" font-weight="800" font-size="64" fill="#fff">' + p.word + '</text><rect x="64" y="166" width="150" height="8" rx="4" fill="#fff" fill-opacity=".85"/><circle cx="318" cy="96" r="30" fill="#04060C" fill-opacity=".35"/><path d="M310 82l22 14-22 14z" fill="#fff"/><rect x="40" y="244" width="320" height="24" rx="4" fill="#0B1226"/><rect x="48" y="250" width="90" height="12" rx="2" fill="#2554C9"/><rect x="142" y="250" width="120" height="12" rx="2" fill="#5B8CFF"/><rect x="266" y="250" width="86" height="12" rx="2" fill="#1C3B8F"/><rect x="200" y="242" width="2" height="28" fill="#fff"/>';
+    return head + s + "</svg>";
+  }
+  var P = [
+    { title: "Nova Coffee", cat: "Branding", kind: "logo", word: "NOVA", c: ["#2F6BFF", "#A9C4FF", "#1B3FA8"], year: 2026, svc: "Logo, identity, packaging", tools: "Illustrator, Photoshop", time: "9 days", d: "A warm, modern identity for a specialty coffee roaster: a two-ring mark, a confident wordmark and a packaging system that works across bags, cups and signage." },
+    { title: "Pulse Fitness", cat: "Social", kind: "social", word: "PULSE", c: ["#2F6BFF", "#7FA4FF", "#14296A"], year: 2026, svc: "Social kit, 30 templates", tools: "Photoshop, Figma", time: "6 days", d: "A feed system for a gym chain: editable post, story and carousel templates that keep a coach-run account looking consistent every week." },
+    { title: "Orbit Banking App", cat: "UI/UX", kind: "ui", word: "ORBIT", c: ["#3C78FF", "#A9C4FF", "#1C3B8F"], year: 2026, svc: "App UI, prototype, design system", tools: "Figma", time: "3 weeks", d: "Mobile banking screens built for clarity: a spending overview, simple transfers and a component library ready to hand to developers." },
+    { title: "Neon Run Intro", cat: "Motion", kind: "motion", word: "NEON", c: ["#5B8CFF", "#2F6BFF", "#A9C4FF"], year: 2026, svc: "Logo animation, sound design", tools: "After Effects, Audition", time: "4 days", d: "A 6-second logo sting for a gaming channel, with kinetic rings, a light sweep and a custom sound hit." },
+    { title: "Tech Review Ep. 48", cat: "Video", kind: "thumb", word: "10X", c: ["#2F6BFF", "#071238", "#5B8CFF"], year: 2026, svc: "YouTube edit, thumbnail", tools: "Premiere Pro, Photoshop", time: "3 days", d: "A tight 11-minute review edit with pacing cuts, on-screen callouts, captions and a thumbnail designed to lift click-through." },
+    { title: "Aurora Fest", cat: "Branding", kind: "poster", word: "AURORA", c: ["#5B8CFF", "#2F6BFF", "#1B3FA8"], year: 2026, svc: "Poster series, festival identity", tools: "Illustrator, InDesign", time: "8 days", d: "A music festival identity built from one oversized letterform, applied to posters, tickets, wristbands and stage screens." },
+    { title: "Kite Studio Reel", cat: "Video", kind: "motion", word: "KITE", c: ["#A9C4FF", "#2F6BFF", "#5B8CFF"], year: 2026, svc: "Showreel edit, color grade", tools: "Premiere Pro, DaVinci Resolve", time: "5 days", d: "A 60-second showreel for an architecture studio with rhythmic cuts, a cool cinematic grade and clean typographic titles." },
+    { title: "Lumen Skincare", cat: "Social", kind: "social", word: "LUMEN", c: ["#7FA4FF", "#2F6BFF", "#A9C4FF"], year: 2026, svc: "Launch campaign, ad creatives", tools: "Photoshop, After Effects", time: "7 days", d: "A product-launch campaign with static ads, animated stories and a 15-second video ad, all in one soft visual language." },
+    { title: "Flux Dashboard", cat: "UI/UX", kind: "ui", word: "FLUX", c: ["#2F6BFF", "#5B8CFF", "#A9C4FF"], year: 2026, svc: "Dashboard UI, user flows", tools: "Figma", time: "2 weeks", d: "A data-heavy analytics dashboard redesigned for scanning: clearer hierarchy, better charts and a dark mode that stays readable." }
+  ];
+  var cats = ["All", "Branding", "Social", "UI/UX", "Motion", "Video"];
+  $("#filters").innerHTML = cats.map(function (c) { return '<button class="chip" type="button" data-c="' + c + '" aria-pressed="' + (c === "All") + '">' + c + "</button>"; }).join("");
+  $("#work-grid").innerHTML = P.map(function (p, i) {
+    return '<button class="work reveal" type="button" data-i="' + i + '" data-c="' + p.cat + '"><div class="art">' + art(p, i) + '<span class="view">VIEW PROJECT</span></div><div class="meta"><h3>' + p.title + '</h3><span class="cat">' + p.cat + "</span></div></button>";
+  }).join("");
+  $("#filters").addEventListener("click", function (e) {
+    var b = e.target.closest(".chip"); if (!b) return; var c = b.getAttribute("data-c");
+    $$(".chip").forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+    $$(".work").forEach(function (w) { w.hidden = !(c === "All" || w.getAttribute("data-c") === c); });
+  });
+
+  /* Modal */
+  var modal = $("#modal"), last = null;
+  function openModal(i) {
+    var p = P[i]; last = document.activeElement;
+    $("#m-art").innerHTML = art(p, i + 40); $("#m-cat").textContent = p.cat; $("#m-title").textContent = p.title; $("#m-desc").textContent = p.d;
+    $("#m-kv").innerHTML = [["Services", p.svc], ["Tools", p.tools], ["Timeline", p.time], ["Year", p.year]].map(function (r) { return "<div><span>" + r[0] + "</span><span>" + r[1] + "</span></div>"; }).join("");
+    modal.classList.add("on"); modal.setAttribute("aria-hidden", "false"); setTimeout(function () { $("#m-close").focus(); }, 40);
+  }
+  function closeModal() { modal.classList.remove("on"); modal.setAttribute("aria-hidden", "true"); if (last) last.focus(); }
+  $("#work-grid").addEventListener("click", function (e) { var w = e.target.closest(".work"); if (w) openModal(+w.getAttribute("data-i")); });
+  $("#m-close").addEventListener("click", closeModal);
+  $("#m-cta").addEventListener("click", function () { closeModal(); });
+  modal.addEventListener("click", function (e) { if (e.target === modal) closeModal(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") { closeModal(); closeMenu(); } });
+
+  /* Packages */
+  var G = {
+    "Graphic Design": [
+      { n: "Starter", p: 149, u: "one-time", d: "A clean logo for a new venture or side project.", f: ["3 logo concepts", "2 revision rounds", "SVG, PNG and PDF files", "Black and white versions", "Delivery in 3–5 days"] },
+      { n: "Brand", p: 449, u: "one-time", d: "A complete visual identity you can launch with.", hot: 1, f: ["Logo with 3 concepts", "Color palette and typography", "Business card and letterhead", "Social media profile kit", "1-page brand guide", "3 revision rounds", "Delivery in 7–10 days"] },
+      { n: "Studio", p: 1199, u: "one-time", d: "A full identity system with print and digital assets.", f: ["Full logo suite", "20-page brand guidelines", "Stationery set", "2 print or packaging pieces", "12 social media templates", "5 revision rounds", "Delivery in about 3 weeks"] }
+    ],
+    "UI/UX": [
+      { n: "Screens", p: 399, u: "one-time", d: "Up to 5 polished screens for an app or landing page.", f: ["Up to 5 screens", "Mobile and desktop layouts", "Basic user flow", "2 revision rounds", "Figma file included", "Delivery in 5–7 days"] },
+      { n: "Product", p: 999, u: "one-time", d: "A complete flow with a clickable prototype.", hot: 1, f: ["Up to 15 screens", "Wireframes and user flows", "Clickable prototype", "Light and dark mode", "3 revision rounds", "Developer-ready Figma file", "Delivery in 2–3 weeks"] },
+      { n: "System", p: 2400, u: "one-time", d: "A scalable design system for a growing product.", f: ["Up to 30 screens", "Design system and components", "Icon set", "UX audit and recommendations", "5 revision rounds", "Handoff notes for developers", "Delivery in 4–5 weeks"] }
+    ],
+    "Video Editing": [
+      { n: "Reel", p: 99, u: "per video", d: "One short-form video for Reels, Shorts or TikTok.", f: ["Up to 60 seconds", "Captions and sound sync", "Music and effects", "2 revision rounds", "Delivery in 48–72 hours"] },
+      { n: "Creator", p: 349, u: "per month", d: "A steady flow of videos for your channel.", hot: 1, f: ["4 videos per month, up to 8 min", "Thumbnails included", "Color correction and audio cleanup", "Captions on every video", "2 revision rounds each", "Delivery in 3 days per video"] },
+      { n: "Campaign", p: 899, u: "one-time", d: "A polished promo or brand film.", f: ["Up to 90 seconds", "Motion graphics and titles", "Color grade and sound design", "Cut-downs in 3 aspect ratios", "3 revision rounds", "Delivery in 7–10 days"] }
+    ],
+    "Motion Graphics": [
+      { n: "Logo Sting", p: 149, u: "one-time", d: "A short animated logo for intros and outros.", f: ["5–8 second animation", "Sound effect included", "MP4 with alpha version", "2 revision rounds", "Delivery in 3–4 days"] },
+      { n: "Explainer", p: 799, u: "one-time", d: "A 2D animated video that explains your product.", hot: 1, f: ["Up to 60 seconds", "Script polish and storyboard", "Custom 2D illustration", "Voiceover sync and music", "3 revision rounds", "Delivery in 2–3 weeks"] },
+      { n: "Motion Pack", p: 1499, u: "one-time", d: "A reusable toolkit of branded animations.", f: ["10 animated assets", "Lower thirds and title cards", "Transitions and end screens", "Editable project files", "3 revision rounds", "Delivery in 3 weeks"] }
+    ]
+  };
+  var keys = Object.keys(G), activeTab = keys[0];
+  $("#tabs").innerHTML = keys.map(function (k, i) { return '<button class="tab" type="button" role="tab" data-k="' + k + '" aria-selected="' + (i === 0) + '">' + k + "</button>"; }).join("");
+  function money(n) { return "$" + n.toLocaleString("en-US"); }
+  function renderPlans() {
+    $("#plans").innerHTML = G[activeTab].map(function (pl) {
+      return '<article class="plan' + (pl.hot ? " hot" : "") + '">' + (pl.hot ? '<span class="flag">Most booked</span>' : "") +
+        "<h3>" + pl.n + '</h3><p class="desc">' + pl.d + '</p><div class="price">' + money(pl.p) + "<small>" + pl.u.toUpperCase() + "</small></div><ul>" +
+        pl.f.map(function (x) { return "<li>" + x + "</li>"; }).join("") + '</ul><button class="btn ' + (pl.hot ? "primary" : "") + '" type="button" data-plan="' + activeTab + " · " + pl.n + ", " + money(pl.p) + '">Choose ' + pl.n + ' <span class="arrow">→</span></button></article>';
+    }).join("");
+  }
+  $("#tabs").addEventListener("click", function (e) {
+    var t = e.target.closest(".tab"); if (!t) return; activeTab = t.getAttribute("data-k");
+    $$(".tab").forEach(function (x) { x.setAttribute("aria-selected", String(x === t)); }); renderPlans();
+  });
+  renderPlans();
+  var svcMap = { "Graphic Design": "Logo & brand identity", "UI/UX": "UI/UX design", "Video Editing": "Video editing", "Motion Graphics": "Motion graphics" };
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-plan]"); if (!b) return;
+    var plan = b.getAttribute("data-plan"), tabName = plan.split(" · ")[0];
+    var sel = $("#f-service"), want = plan.indexOf("Retainer") === 0 ? "Retainer, design + video" : (svcMap[tabName] || "");
+    $$("option", sel).forEach(function (o) { if (o.textContent.replace(/&amp;/g, "&") === want) sel.value = o.value; });
+    $("#f-msg").value = "Package: " + plan + "\n\n";
+    $("#contact").scrollIntoView({ behavior: reduce ? "auto" : "smooth" });
+    setTimeout(function () { $("#f-name").focus({ preventScroll: true }); }, 500);
+  });
+
+  /* Form + copy */
+  $("#contact-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var em = $("#f-email"), note = $("#form-note");
+    if (!/^\S+@\S+\.\S+$/.test(em.value)) { note.textContent = "Enter a valid email address."; em.focus(); return; }
+    note.textContent = "Thank you. Your message is in and I will reply within 24 hours.";
+    e.target.reset();
+  });
+  $$(".copy").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var el = $(btn.getAttribute("data-copy")), txt = el.textContent;
+      function done() { btn.textContent = "Copied ✓"; setTimeout(function () { btn.textContent = "Copy"; }, 1500); }
+      function fb() { var r = document.createRange(); r.selectNodeContents(el); var s = getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent = "Selected"; }
+      try { navigator.clipboard.writeText(txt).then(done, fb); } catch (err) { fb(); }
+    });
+  });
+
+  /* Legal pages: open from footer and form links, routed by #privacy and #terms */
+  var legal = $("#legal"), legalLast = null, legalByClick = false;
+  function showDoc(which) {
+    $("#doc-privacy").hidden = which !== "privacy"; $("#doc-terms").hidden = which !== "terms";
+    $$("#legal .tab").forEach(function (t) { t.setAttribute("aria-selected", String(t.getAttribute("data-doc") === which)); });
+    $("#legal-scroll").scrollTop = 0;
+  }
+  function openLegal(which) {
+    if (!legal.classList.contains("on")) legalLast = document.activeElement;
+    showDoc(which); legal.classList.add("on"); legal.setAttribute("aria-hidden", "false");
+    document.documentElement.style.overflow = "hidden"; closeMenu();
+    setTimeout(function () { $("#legal-close").focus(); }, 40);
+  }
+  function hideLegal() {
+    if (!legal.classList.contains("on")) return;
+    legal.classList.remove("on"); legal.setAttribute("aria-hidden", "true");
+    document.documentElement.style.overflow = "";
+    if (legalLast) legalLast.focus();
+  }
+  function closeLegal() {
+    if (!legal.classList.contains("on")) return;
+    if (legalByClick) { legalByClick = false; history.back(); } else { hideLegal(); location.hash = "top"; }
+  }
+  function syncLegal() {
+    var h = location.hash.replace("#", "");
+    if (h === "privacy" || h === "terms") openLegal(h); else hideLegal();
+  }
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest("[data-legal]"); if (!a) return;
+    e.preventDefault(); legalByClick = true; location.hash = a.getAttribute("data-legal");
+  });
+  $$("#legal .tab").forEach(function (t) {
+    t.addEventListener("click", function () { var d = t.getAttribute("data-doc"); legalByClick = legalByClick || false; location.replace("#" + d); });
+  });
+  $("#legal-close").addEventListener("click", closeLegal);
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeLegal(); });
+  window.addEventListener("hashchange", syncLegal);
+  syncLegal();
+
+  /* Reveal + active nav */
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (es) { es.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); } }); }, { threshold: .1, rootMargin: "0px 0px -5% 0px" });
+    $$(".reveal").forEach(function (el) { io.observe(el); });
+    var links = $$("#nav a");
+    var so = new IntersectionObserver(function (es) { es.forEach(function (en) { if (en.isIntersecting) links.forEach(function (a) { a.setAttribute("aria-current", String(a.getAttribute("href") === "#" + en.target.id)); }); }); }, { rootMargin: "-45% 0px -50% 0px" });
+    ["services", "work", "packages", "process", "faq", "contact"].forEach(function (id) { so.observe($("#" + id)); });
+  } else { $$(".reveal").forEach(function (el) { el.classList.add("in"); }); }
+})();
+</script>
+
+</body></html>
